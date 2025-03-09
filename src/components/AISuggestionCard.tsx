@@ -1,5 +1,5 @@
 
-import { Bulb, CheckCircle2 } from "lucide-react";
+import { Lightbulb, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +25,7 @@ export function AISuggestionCard({ title, suggestion }: AISuggestionCardProps) {
     <div className="p-3 border rounded-lg bg-primary/5 relative">
       <div className="flex items-start gap-3">
         <div className="mt-0.5">
-          <Bulb className="h-4 w-4 text-amber-500" />
+          <Lightbulb className="h-4 w-4 text-amber-500" />
         </div>
         <div className="flex-1">
           <h4 className="text-sm font-medium mb-1">{title}</h4>

@@ -4,25 +4,25 @@ import { cn } from "@/lib/utils";
 
 interface StatsCardProps {
   icon: ReactNode;
-  label: string;
+  title: string;
   value: string;
-  change?: string;
+  description?: string;
   positive?: boolean;
   className?: string;
 }
 
 export function StatsCard({ 
   icon, 
-  label, 
+  title, 
   value, 
-  change, 
+  description, 
   positive = true,
   className 
 }: StatsCardProps) {
   return (
     <div className={cn("glass-card rounded-xl p-6", className)}>
       <div className="flex justify-between items-start mb-4">
-        <span className="text-muted-foreground text-sm font-medium">{label}</span>
+        <span className="text-muted-foreground text-sm font-medium">{title}</span>
         <div className="text-muted-foreground/60">
           {icon}
         </div>
@@ -30,9 +30,9 @@ export function StatsCard({
       
       <div className="flex items-baseline space-x-2">
         <span className="text-2xl font-semibold">{value}</span>
-        {change && (
+        {description && (
           <span className={`text-sm font-medium ${positive ? 'text-green-500' : 'text-red-500'}`}>
-            {positive ? '+' : ''}{change}
+            {positive ? '+' : ''}{description}
           </span>
         )}
       </div>
