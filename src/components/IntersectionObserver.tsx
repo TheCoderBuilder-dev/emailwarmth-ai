@@ -27,13 +27,23 @@ export function IntersectionObserver({
       ([entry]) => {
         if (entry.isIntersecting) {
           entry.target.classList.remove(initialClass);
-          entry.target.classList.add(animateClass);
+          
+          // Split animateClass by spaces and add each class separately
+          const classes = animateClass.split(" ");
+          classes.forEach(cls => {
+            if (cls) entry.target.classList.add(cls);
+          });
           
           if (animateOnce) {
             observer.unobserve(entry.target);
           }
         } else if (!animateOnce) {
-          entry.target.classList.remove(animateClass);
+          // Split animateClass by spaces and remove each class separately
+          const classes = animateClass.split(" ");
+          classes.forEach(cls => {
+            if (cls) entry.target.classList.remove(cls);
+          });
+          
           entry.target.classList.add(initialClass);
         }
       },
