@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { IntersectionObserver } from "@/components/IntersectionObserver";
 import { FeatureCard } from "@/components/FeatureCard";
 import { PricingCard } from "@/components/PricingCard";
+import { useScrollToHash } from "@/hooks/use-scroll-to-hash";
 import { 
   Accordion,
   AccordionContent,
@@ -27,6 +28,8 @@ import { Link } from "react-router-dom";
 
 export default function Index() {
   const [scrollY, setScrollY] = useState(0);
+  // Use the scroll to hash hook
+  useScrollToHash();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,7 +72,12 @@ export default function Index() {
                 <Link to="/register">Get Started Free</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-base">
-                <Link to="/#features">Learn More</Link>
+                <a href="#features" onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}>
+                  Learn More
+                </a>
               </Button>
             </div>
           </div>
@@ -77,7 +85,7 @@ export default function Index() {
       </section>
       
       {/* Features Section */}
-      <section id="features" className="py-24 md:py-32 px-6 md:px-12">
+      <section id="features" className="py-24 md:py-32 px-6 md:px-12 scroll-mt-24">
         <div className="container mx-auto">
           <IntersectionObserver className="max-w-xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">All the Tools You Need</h2>
@@ -198,7 +206,7 @@ export default function Index() {
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 md:py-32 px-6 md:px-12">
+      <section id="pricing" className="py-24 md:py-32 px-6 md:px-12 scroll-mt-24">
         <div className="container mx-auto">
           <IntersectionObserver className="max-w-xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
@@ -263,7 +271,7 @@ export default function Index() {
       </section>
       
       {/* FAQ Section */}
-      <section id="faq" className="py-24 md:py-32 px-6 md:px-12 bg-primary/5">
+      <section id="faq" className="py-24 md:py-32 px-6 md:px-12 bg-primary/5 scroll-mt-24">
         <div className="container mx-auto">
           <IntersectionObserver className="max-w-xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>

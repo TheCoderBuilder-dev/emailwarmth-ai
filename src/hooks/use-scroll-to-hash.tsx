@@ -14,15 +14,22 @@ export function useScrollToHash() {
       if (element) {
         // Wait a bit to ensure the DOM is fully loaded
         setTimeout(() => {
+          const headerOffset = 100; // Offset for fixed header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
           window.scrollTo({
-            top: element.offsetTop - 100, // Offset for the fixed header
+            top: offsetPosition,
             behavior: 'smooth'
           });
         }, 100);
       }
-    } else if (location.pathname === '/') {
+    } else if (location.pathname === '/' && location.state?.scrollToTop) {
       // Scroll to top when navigating to home without hash
-      window.scrollTo(0, 0);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   }, [location]);
 }

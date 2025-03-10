@@ -29,7 +29,9 @@ export function Navbar({ transparent = false }: NavbarProps) {
       const id = location.hash.substring(1);
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       }
     }
   }, [location]);
@@ -94,26 +96,48 @@ interface NavLinksProps {
 }
 
 function NavLinks({ mobile = false, onClick }: NavLinksProps) {
+  const location = useLocation();
   const links = [
     { label: "Features", href: "/#features" },
     { label: "Pricing", href: "/#pricing" },
     { label: "FAQ", href: "/#faq" },
   ];
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    
+    // If we're already on the homepage
+    if (location.pathname === '/') {
+      const id = href.split('#')[1];
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+      // Update URL without page reload
+      window.history.pushState(null, '', href);
+    } else {
+      // Navigate to homepage with hash
+      window.location.href = href;
+    }
+    
+    // Call the original onClick if provided (for mobile menu closing)
+    if (onClick) onClick();
+  };
+
   return (
     <>
       {links.map((link) => (
-        <Link
+        <a
           key={link.label}
-          to={link.href}
-          onClick={onClick}
+          href={link.href}
+          onClick={(e) => handleNavClick(e, link.href)}
           className={cn(
             "font-medium text-foreground/80 hover:text-foreground transition-colors",
             mobile && "text-lg py-2"
           )}
         >
           {link.label}
-        </Link>
+        </a>
       ))}
     </>
   );
