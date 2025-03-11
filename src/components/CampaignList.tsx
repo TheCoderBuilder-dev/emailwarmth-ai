@@ -1,244 +1,123 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
-import { 
-  PlusCircle, 
-  Search, 
-  MoreVertical, 
-  Play, 
-  Pause, 
-  Eye, 
-  Edit, 
-  Trash2, 
-  ArrowUpDown, 
-  CheckCircle2,
-  Clock,
-  AlertTriangle
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-
-interface Campaign {
-  id: string;
-  name: string;
-  status: "draft" | "scheduled" | "active" | "paused" | "completed";
-  recipients: number;
-  openRate: number;
-  replyRate: number;
-  lastUpdated: string;
-}
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight, Mail, Calendar, Users, BarChart, Play, Pause } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function CampaignList() {
-  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   
-  // Mock data for campaigns - this would come from your API
-  const campaigns: Campaign[] = [
+  // Mock campaign data - in a real app, this would come from an API
+  const campaigns = [
     {
       id: "1",
-      name: "Initial Outreach - Product Demo",
+      name: "Welcome Sequence",
       status: "active",
-      recipients: 48,
-      openRate: 37.5,
-      replyRate: 12.5,
-      lastUpdated: "2 hours ago"
+      recipients: 45,
+      openRate: 32,
+      sentDate: "2 days ago",
+      nextSend: "Today, 2:00 PM"
     },
     {
       id: "2",
-      name: "Follow-up Sequence - Q1 Prospects",
-      status: "scheduled",
-      recipients: 124,
-      openRate: 0,
-      replyRate: 0,
-      lastUpdated: "Yesterday"
-    },
-    {
-      id: "3",
-      name: "Re-engagement Campaign",
-      status: "draft",
-      recipients: 85,
-      openRate: 0,
-      replyRate: 0,
-      lastUpdated: "3 days ago"
-    },
-    {
-      id: "4",
-      name: "Webinar Invitation - April",
-      status: "completed",
-      recipients: 210,
-      openRate: 42.8,
-      replyRate: 15.2,
-      lastUpdated: "2 weeks ago"
-    },
-    {
-      id: "5",
-      name: "Product Updates - Q2",
+      name: "Newsletter May",
       status: "paused",
-      recipients: 63,
-      openRate: 28.6,
-      replyRate: 7.9,
-      lastUpdated: "4 days ago"
+      recipients: 126,
+      openRate: 28,
+      sentDate: "1 week ago",
+      nextSend: "Not scheduled"
     }
   ];
   
-  const filteredCampaigns = campaigns.filter(campaign => 
-    campaign.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
-  const handleAction = (action: string, campaignId: string) => {
+  const handlePauseCampaign = (id: string) => {
     toast({
-      title: `Campaign ${action}`,
-      description: `Campaign ${action} action will be available in the next update`,
+      title: "Campaign paused",
+      description: "The campaign has been paused successfully."
     });
   };
   
-  const getStatusIcon = (status: Campaign["status"]) => {
-    switch (status) {
-      case "active":
-        return <Play className="h-4 w-4 text-green-500" />;
-      case "scheduled":
-        return <Clock className="h-4 w-4 text-blue-500" />;
-      case "draft":
-        return <Edit className="h-4 w-4 text-amber-500" />;
-      case "paused":
-        return <Pause className="h-4 w-4 text-orange-500" />;
-      case "completed":
-        return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-      default:
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-    }
+  const handleResumeCampaign = (id: string) => {
+    toast({
+      title: "Campaign resumed",
+      description: "The campaign is now active again."
+    });
   };
   
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search campaigns..."
-            className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Campaign
-        </Button>
-      </div>
-      
-      <Card className="border rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="text-left text-sm font-medium text-muted-foreground py-3 px-4">
-                  <div className="flex items-center">
-                    Campaign Name
-                    <ArrowUpDown className="ml-2 h-3 w-3" />
+      {campaigns.length > 0 ? (
+        <div>
+          {campaigns.map((campaign) => (
+            <Card key={campaign.id} className="mb-4 hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-medium">{campaign.name}</h3>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        campaign.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {campaign.status === 'active' ? 'Active' : 'Paused'}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 mt-3">
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Users className="mr-2 h-4 w-4" />
+                        <span>{campaign.recipients} recipients</span>
+                      </div>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <BarChart className="mr-2 h-4 w-4" />
+                        <span>{campaign.openRate}% open rate</span>
+                      </div>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Mail className="mr-2 h-4 w-4" />
+                        <span>Sent {campaign.sentDate}</span>
+                      </div>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        <span>Next: {campaign.nextSend}</span>
+                      </div>
+                    </div>
                   </div>
-                </th>
-                <th className="text-center text-sm font-medium text-muted-foreground py-3 px-4">Status</th>
-                <th className="text-center text-sm font-medium text-muted-foreground py-3 px-4">Recipients</th>
-                <th className="text-center text-sm font-medium text-muted-foreground py-3 px-4">Open Rate</th>
-                <th className="text-center text-sm font-medium text-muted-foreground py-3 px-4">Reply Rate</th>
-                <th className="text-center text-sm font-medium text-muted-foreground py-3 px-4">Last Updated</th>
-                <th className="text-right text-sm font-medium text-muted-foreground py-3 px-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCampaigns.length > 0 ? (
-                filteredCampaigns.map((campaign) => (
-                  <tr key={campaign.id} className="border-b border-border hover:bg-muted/30">
-                    <td className="py-3 px-4 min-w-[200px]">
-                      <div>
-                        <p className="font-medium">{campaign.name}</p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <div className="flex items-center justify-center space-x-1">
-                        {getStatusIcon(campaign.status)}
-                        <span className={cn(
-                          "text-xs font-medium capitalize",
-                          campaign.status === "active" && "text-green-500",
-                          campaign.status === "scheduled" && "text-blue-500",
-                          campaign.status === "draft" && "text-amber-500",
-                          campaign.status === "paused" && "text-orange-500",
-                          campaign.status === "completed" && "text-green-500",
-                        )}>
-                          {campaign.status}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-center">{campaign.recipients}</td>
-                    <td className="py-3 px-4 text-center">
-                      {campaign.status === "draft" || campaign.status === "scheduled" ? 
-                        "—" : `${campaign.openRate.toFixed(1)}%`}
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      {campaign.status === "draft" || campaign.status === "scheduled" ? 
-                        "—" : `${campaign.replyRate.toFixed(1)}%`}
-                    </td>
-                    <td className="py-3 px-4 text-center text-sm text-muted-foreground">{campaign.lastUpdated}</td>
-                    <td className="py-3 px-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleAction("view", campaign.id)}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleAction("edit", campaign.id)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          {campaign.status === "active" ? (
-                            <DropdownMenuItem onClick={() => handleAction("pause", campaign.id)}>
-                              <Pause className="mr-2 h-4 w-4" />
-                              Pause
-                            </DropdownMenuItem>
-                          ) : campaign.status === "paused" || campaign.status === "draft" || campaign.status === "scheduled" ? (
-                            <DropdownMenuItem onClick={() => handleAction("activate", campaign.id)}>
-                              <Play className="mr-2 h-4 w-4" />
-                              Activate
-                            </DropdownMenuItem>
-                          ) : null}
-                          <DropdownMenuItem 
-                            onClick={() => handleAction("delete", campaign.id)}
-                            className="text-red-500 focus:text-red-500"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className="py-6 text-center text-muted-foreground">
-                    No campaigns found. Create your first campaign to get started.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                  <div className="flex flex-wrap md:flex-nowrap gap-2 self-end md:self-auto">
+                    {campaign.status === 'active' ? (
+                      <Button variant="outline" size="sm" onClick={() => handlePauseCampaign(campaign.id)}>
+                        <Pause size={16} className="mr-2" />
+                        Pause
+                      </Button>
+                    ) : (
+                      <Button variant="outline" size="sm" onClick={() => handleResumeCampaign(campaign.id)}>
+                        <Play size={16} className="mr-2" />
+                        Resume
+                      </Button>
+                    )}
+                    <Button asChild size="sm">
+                      <Link to={`/dashboard/campaigns/${campaign.id}`}>
+                        View Details
+                        <ArrowRight size={16} className="ml-2" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </Card>
+      ) : (
+        <Card>
+          <CardContent className="p-6">
+            <div className="h-64 flex items-center justify-center border-2 border-dashed rounded-md">
+              <div className="text-center">
+                <p className="text-muted-foreground mb-2">No campaigns yet</p>
+                <Button asChild variant="outline">
+                  <Link to="/dashboard/create-campaign">Create your first campaign</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

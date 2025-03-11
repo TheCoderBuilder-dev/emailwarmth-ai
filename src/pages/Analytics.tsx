@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, DotChart, LineChart, PieChart } from "lucide-react";
+import { BarChart, LineChart, PieChart, Activity } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 

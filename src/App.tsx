@@ -32,6 +32,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/warmup" element={<EmailWarmup />} />
             <Route path="/dashboard/campaigns" element={<Campaigns />} />
+            <Route path="/dashboard/campaigns/:id" element={<CreateCampaign />} />
             <Route path="/dashboard/analytics" element={<Analytics />} />
             <Route path="/dashboard/contacts" element={<Contacts />} />
             <Route path="/dashboard/templates" element={<Templates />} />

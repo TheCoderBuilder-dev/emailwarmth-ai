@@ -114,7 +114,7 @@ export function DashboardSidebar({ collapsed, toggleSidebar }: SidebarProps) {
         <div className="flex-1 overflow-y-auto">
           <nav className="px-2 space-y-1">
             {navItems.map((item) => {
-              const isActive = currentPath === item.path;
+              const isActive = currentPath === item.path || currentPath.startsWith(`${item.path}/`);
               
               return collapsed ? (
                 <TooltipProvider key={item.name}>

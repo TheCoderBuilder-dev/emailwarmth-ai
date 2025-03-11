@@ -1,82 +1,48 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-interface SendEmailParams {
+export interface SendEmailParams {
   to: string;
   subject: string;
   content: string;
+  userId: string;
 }
 
-export const emailService = {
-  async sendEmail({ to, subject, content }: SendEmailParams) {
-    try {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        throw new Error("Authentication required");
-      }
-      
-      const userId = userData.user.id;
-      
-      // Call the Supabase Edge Function
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabase.auth.getSession().then(({ data }) => data.session?.access_token)}`
-        },
-        body: JSON.stringify({
-          to,
-          subject,
-          content,
-          userId
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to send email");
-      }
-      
-      const result = await response.json();
-      
-      // Log the successful email to the emails table
-      const { error: insertError } = await supabase
-        .from('emails')
-        .insert({
-          user_id: userId,
-          recipient: to,
-          subject: subject,
-          content: content,
-          status: 'pending'
-        });
-      
-      if (insertError) {
-        console.error("Failed to log email:", insertError);
-      }
-      
-      return result;
-    } catch (error) {
-      console.error("Email service error:", error);
-      throw error;
+export const sendEmail = async (params: SendEmailParams) => {
+  try {
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: params,
+    });
+
+    if (error) {
+      console.error("Error sending email:", error);
+      throw new Error(error.message || "Failed to send email");
     }
-  },
-  
-  async getEmails() {
-    try {
-      const { data, error } = await supabase
-        .from('emails')
-        .select('*')
-        .order('sent_at', { ascending: false });
-        
-      if (error) {
-        throw error;
-      }
-      
-      return data;
-    } catch (error) {
-      console.error("Failed to fetch emails:", error);
-      throw error;
-    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Error in sendEmail service:", error);
+    throw new Error(error.message || "An unknown error occurred");
+  }
+};
+
+export const getEmailStats = async (userId: string) => {
+  try {
+    // In a real implementation, this would fetch email statistics from the database
+    // For now, we'll return mock data
+    return {
+      sent: 152,
+      delivered: 149,
+      opened: 87,
+      clicked: 34,
+      replied: 12,
+      bounced: 3,
+      openRate: 58.4,
+      clickRate: 22.8,
+      replyRate: 8.1,
+    };
+  } catch (error: any) {
+    console.error("Error in getEmailStats service:", error);
+    throw new Error(error.message || "Failed to fetch email statistics");
   }
 };
