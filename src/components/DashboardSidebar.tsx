@@ -9,7 +9,8 @@ import {
   MessageSquare, 
   Settings, 
   Users, 
-  Zap
+  Zap,
+  Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,11 @@ export function DashboardSidebar({ collapsed, toggleSidebar }: SidebarProps) {
       name: "Schedule", 
       icon: Clock, 
       path: "/dashboard/schedule" 
+    },
+    { 
+      name: "Email Performance", 
+      icon: Activity, 
+      path: "/dashboard/email-performance" 
     },
     { 
       name: "Settings", 
